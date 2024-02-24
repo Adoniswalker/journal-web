@@ -1,62 +1,64 @@
-// pages/register.js
-
+'use client'
 import {useState} from 'react';
 import {useRouter} from 'next/router';
 import {SubmitHandler, useForm} from "react-hook-form";
 import axios from "axios";
+import '../app/globals.css';
 
 type SignUpData = {
     email: string;
     password: string;
 }
 export default function Register() {
+    const router = useRouter();
     const {register, handleSubmit, formState: {errors}} = useForm<SignUpData>();
-    const [loginError, setLoginError] = useState('');
+    const [signupError, setSignUpError] = useState('');
 
     const onSubmit: SubmitHandler<SignUpData> = async (data) => {
         try {
-            const response = await axios.post('/api/users/authenticate', data);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_HOST}/users/signup`, data);
+            console.log(response)
             // Handle successful login (store token, redirect, etc.)
+            router.push('/');
         } catch (error) {
-            setLoginError('Invalid credentials. Please try again.');
+            console.error(error)
+            setSignUpError('Invalid credentials. Please try again.');
         }
     };
-    // const [email, setEmail] = useState('');
-    // const [password, setPassword] = useState('');
-    const router = useRouter();
-
-    // const handleSubmit = async (e:any) => {
-    //     e.preventDefault();
-
-        // Perform user registration logic (e.g., send data to API)
-        // You can use a backend API route to handle registration
-
-        // Redirect to login page after successful registration
-        // router.push('/login');
-    // };
-
     return (
-        <div>
-            <h1>Register</h1>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    {...register("email", {required:true})}
-                    // value={email}
-                    // onChange={(e) => setEmail(e.target.value)}
-                    // required
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    {...register("password", {required:true})}
-                    // value={password}
-                    // onChange={(e) => setPassword(e.target.value)}
-                    // required
-                />
-                <button type="submit">Register</button>
-            </form>
+        // <body>
+        <div className="bg-gray-100 flex justify-center items-center h-screen">
+            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+                <h1 className="text-2xl font-bold mb-4 text-center">Register</h1>
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                    <div>
+                        <label htmlFor="email" className="block mb-1">Email</label>
+                        <input
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                            type="email"
+                            placeholder="Email"
+                            {...register("email", {required: true})}
+                        /></div>
+                    <div>
+                        <label htmlFor="password" className="block mb-1">Password</label>
+                        <input
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                            type="password"
+                            placeholder="Password"
+                            {...register("password", {required: true})}
+                        />
+                    </div>
+                    {errors.email && <span>Email is required</span>}
+                    {errors.password && <span>Password is required</span>}
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200">
+                        Signup
+                    </button>
+                    {signupError && <p>{signupError}</p>}
+                </form>
+            </div>
         </div>
+        // </body>
     );
 }
