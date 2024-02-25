@@ -13,7 +13,6 @@ type JournalData = {
 }
 
 
-
 const ArticleForm = () => {
     const router = useRouter();
     const {register, handleSubmit, formState: {errors}} = useForm<JournalData>();
@@ -26,7 +25,7 @@ const ArticleForm = () => {
         if (!isLoggedIn) {
             router.push('/login');
         }
-    }, []);
+    }, [router]);
     const onSubmit: SubmitHandler<JournalData> = async (data) => {
         try {
             // Authenticate user (use token from login)

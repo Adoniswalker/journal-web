@@ -68,7 +68,7 @@ const LoginForm = () => {
                     {loginError && <p>{loginError}</p>}
                 </form>
                 <div className="mt-4 text-center">
-                    <span className="text-gray-600">Don't have an account?</span>
+                    <span className="text-gray-600">Dont have an account?</span>
                     <Link href="/signup" className="text-blue-500 ml-1 hover:underline">Sign Up</Link>
                 </div>
             </div>
