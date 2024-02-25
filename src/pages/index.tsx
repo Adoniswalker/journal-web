@@ -53,6 +53,9 @@ const ArticleForm = () => {
                 <h2 className="text-lg font-semibold mb-4">Write your journal entry here</h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <textarea
+              // rows="3"
+              // cols="85"
+              maxLength={500}
               className="w-full h-40 px-4 py-2 border border-gray-300 rounded-md resize-none"
               placeholder="Write your thoughts here..."
               {...register("content", {required: true})
