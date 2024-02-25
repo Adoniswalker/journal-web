@@ -4,12 +4,16 @@ import {SubmitHandler, useForm} from 'react-hook-form';
 import axios from 'axios';
 import {useRouter} from "next/router";
 import {checkIfUserIsLoggedIn} from "@/utils";
-import {parseCookies} from "nookies";
+import {destroyCookie, parseCookies} from "nookies";
 import '../app/globals.css';
+import NavBar from "@/components/NavBar";
 
 type JournalData = {
     content: string;
 }
+
+
+
 const ArticleForm = () => {
     const router = useRouter();
     const {register, handleSubmit, formState: {errors}} = useForm<JournalData>();
@@ -40,13 +44,25 @@ const ArticleForm = () => {
             );
             console.log(response)
             // Handle successful article post
-        } catch (error) {
-            setPostError('Error posting article. Please try again.');
-            console.log(error)
+        } catch (error:any) {
+            console.error(error)
+            if (error.isAxiosError && !error.response) {
+                setPostError(error.message);
+            } else {
+                setPostError(error.response?.data?.message);
+            }
         }
+    };
+    const handleLogout: React.MouseEventHandler<HTMLButtonElement> = (event) => {
+        destroyCookie(null, 'authToken')
+        router.push('/login');
     };
 
     return (
+        <>
+        <NavBar
+            handleLogout={handleLogout}
+        />
         <div className="bg-gray-100 flex justify-center items-center h-screen">
             <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
                 <h1 className="text-2xl font-bold mb-4">Journal</h1>
@@ -68,6 +84,7 @@ const ArticleForm = () => {
                 </form>
             </div>
         </div>
+            </>
     );
 };
 

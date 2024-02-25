@@ -4,6 +4,7 @@ import axios from 'axios';
 import '../app/globals.css';
 import {setCookie} from "nookies";
 import {useRouter} from "next/router";
+import Link from "next/link";
 
 type FormData = {
     email: string;
@@ -24,9 +25,13 @@ const LoginForm = () => {
             });
             router.push('/');
             // Handle successful login (store token, redirect, etc.)
-        } catch (error) {
+        } catch (error:any) {
             console.error(error)
-            setLoginError('Invalid credentials. Please try again.');
+            if (error.isAxiosError && !error.response) {
+                setLoginError(error.message);
+            } else {
+                setLoginError(error.response?.data?.message);
+            }
         }
     };
 
@@ -44,6 +49,7 @@ const LoginForm = () => {
                             placeholder="Email"
                             {...register("email", {required: true})}
                         /></div>
+                    {errors.email && <span>Email is required</span>}
                     <div>
                         <label htmlFor="password" className="block mb-1">Password</label>
                         <input
@@ -53,7 +59,6 @@ const LoginForm = () => {
                             {...register("password", {required: true})}
                         />
                     </div>
-                    {errors.email && <span>Email is required</span>}
                     {errors.password && <span>Password is required</span>}
                     <button
                         type="submit"
@@ -62,6 +67,10 @@ const LoginForm = () => {
                     </button>
                     {loginError && <p>{loginError}</p>}
                 </form>
+                <div className="mt-4 text-center">
+                    <span className="text-gray-600">Don't have an account?</span>
+                    <Link href="/signup" className="text-blue-500 ml-1 hover:underline">Sign Up</Link>
+                </div>
             </div>
         </div>
         // </body>

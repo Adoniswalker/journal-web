@@ -4,6 +4,7 @@ import {useRouter} from 'next/router';
 import {SubmitHandler, useForm} from "react-hook-form";
 import axios from "axios";
 import '../app/globals.css';
+import Link from "next/link";
 
 type SignUpData = {
     email: string;
@@ -17,12 +18,15 @@ export default function Register() {
     const onSubmit: SubmitHandler<SignUpData> = async (data) => {
         try {
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_HOST}/users/signup`, data);
-            console.log(response)
             // Handle successful login (store token, redirect, etc.)
             router.push('/');
-        } catch (error) {
-            console.error(error)
-            setSignUpError('Invalid credentials. Please try again.');
+        } catch (error:any) {
+                console.error(error)
+                if (error.isAxiosError && !error.response) {
+                    setSignUpError(error.message);
+                } else {
+                    setSignUpError(error.response?.data?.message);
+                }
         }
     };
     return (
@@ -39,6 +43,7 @@ export default function Register() {
                             placeholder="Email"
                             {...register("email", {required: true})}
                         /></div>
+                    {errors.email && <span className="text-red-500 text-sm">Email is required</span>}
                     <div>
                         <label htmlFor="password" className="block mb-1">Password</label>
                         <input
@@ -48,15 +53,18 @@ export default function Register() {
                             {...register("password", {required: true})}
                         />
                     </div>
-                    {errors.email && <span>Email is required</span>}
-                    {errors.password && <span>Password is required</span>}
+                    {errors.password && <span className="text-red-500 text-sm">Password is required</span>}
                     <button
                         type="submit"
                         className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200">
                         Signup
                     </button>
-                    {signupError && <p>{signupError}</p>}
+                    {signupError && <p className="text-red-500 text-sm">{signupError}</p>}
                 </form>
+                <div className="mt-4 text-center">
+                    <span className="text-gray-600">Have an account?</span>
+                    <Link href="/login" className="text-blue-500 ml-1 hover:underline">Login</Link>
+                </div>
             </div>
         </div>
         // </body>
