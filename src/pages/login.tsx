@@ -18,7 +18,7 @@ const LoginForm = () => {
     const onSubmit: SubmitHandler<FormData> = async (data) => {
         try {
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_HOST}/users/login`, data);
-            setCookie({  }, 'authToken', response.data.token, {
+            setCookie({  }, 'authToken', response.data.data.token, {
                 maxAge: 86400, // 24 hours in seconds
                 // httpOnly: true,
                 path: '/',
@@ -49,7 +49,7 @@ const LoginForm = () => {
                             placeholder="Email"
                             {...register("email", {required: true})}
                         /></div>
-                    {errors.email && <span>Email is required</span>}
+                    {errors.email && <span className="text-red-500 text-sm">Email is required</span>}
                     <div>
                         <label htmlFor="password" className="block mb-1">Password</label>
                         <input
@@ -59,13 +59,13 @@ const LoginForm = () => {
                             {...register("password", {required: true})}
                         />
                     </div>
-                    {errors.password && <span>Password is required</span>}
+                    {errors.password && <span className="text-red-500 text-sm">Password is required</span>}
                     <button
                         type="submit"
                         className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200">
                         Login
                     </button>
-                    {loginError && <p>{loginError}</p>}
+                    {loginError && <p className="text-red-500 text-sm">{loginError}</p>}
                 </form>
                 <div className="mt-4 text-center">
                     <span className="text-gray-600">Dont have an account?</span>
