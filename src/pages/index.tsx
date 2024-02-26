@@ -79,7 +79,11 @@ const ArticleForm = () => {
               maxLength={500}
               className="w-full h-40 px-4 py-2 border border-gray-300 rounded-md resize-none"
               placeholder="Write your thoughts here..."
-              {...register("content", {required: true})
+              {...register("content", {
+                  required: true,
+                  minLength: 0,
+                  maxLength:500
+              })
               }/>
                     {errors.content && <span>Content is required</span>}
                     <button type="submit"
